@@ -42,14 +42,11 @@ This document provides a step-by-step guide to set up and use the Espressif IoT 
      ![image](https://github.com/user-attachments/assets/ae5c633b-ea73-48d8-bccc-9969d7b70e6f)
      ![image](https://github.com/user-attachments/assets/be14fd1d-3a78-4b47-a85d-2cdf889787df)
 
-7. ESP-IDF Tools Installer also creates a shortcut in the Start menu and Desktop for these 2 options to launch the ESP-IDF. These shortcuts launch the corresponding environment and runs `export.bat` script to set up the environment variables (`PATH`, `IDF_PATH` and others). Inside theses, all the installed tools are available.
-8. These shortcuts are specific to the ESP-IDF directory selected in the ESP-IDF Tools Installer. If you have multiple ESP-IDF directories on the computer (for example, to work with different versions of ESP-IDF), you have two options to use them:
-   - Create a copy of the shortcut created by the ESP-IDF Tools Installer, and change the working directory of the new shortcut to the ESP-IDF directory you wish to use.
-   - Alternatively, run `cmd.exe` or `powershell.exe`, then change to the ESP-IDF directory you wish to use, and run `export.bat`. Note that unlike the previous option, this way requires `Python` and `Git` to be present in `PATH`. If you get errors related to                `Python` or `Git` not being found, use the first option.
 ### Linux
 These are the steps for setting up the ESP-IDF for your ESP32.
 - Install Prerequisites
 - Get ESP-IDF
+- Set up the Tools
 
 1. Install prerequisites:
    - Ubuntu and Debian:
@@ -76,10 +73,58 @@ These are the steps for setting up the ESP-IDF for your ESP32.
       ```
     - ESP-IDF is downloaded into `~/esp/esp-idf`
     - Consult [ESP-IDF Versions](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/versions.html) for information about which ESP-IDF version git.
+
+3. Set up the Tools
+    - Aside from the ESP-IDF, you also need to install the tools used by ESP-IDF, such as the compiler, debugger, Python packages, etc, for projects supporting ESP32.
+      ```
+      cd ~/esp/esp-idf
+      ./install.sh esp32
+      ```
+      or with Fish shell
+      ```
+      cd ~/esp/esp-idf
+      ./install.fish esp32
+      ```
+    - The above commands install tools for ESP32 only. If you intend to develop projects for more chip targets then you should list all of them and run for example:
+      ```
+      cd ~/esp/esp-idf
+      ./install.sh esp32,esp32s2
+      ```
+      or with Fish shell
+      ```
+      cd ~/esp/esp-idf
+      ./install.fish esp32,esp32s2
+      ```
+    - In order to install tools for all supported targets please run the following command:
+      ```
+      cd ~/esp/esp-idf
+      ./install.sh all
+      ```
+      or with Fish shell
+      ```
+      cd ~/esp/esp-idf
+      ./install.fish all
+      ```
+    - Alternative File Downloads: If accessing GitHub is slow then it is possible to set an environment variable to prefer Espressif's download server for GitHub asset downloads. To prefer the Espressif download server when installing tools, use the following sequence       of commands when running install.sh:
+      ```
+      cd ~/esp/esp-idf
+      export IDF_GITHUB_ASSETS="dl.espressif.com/github_assets"
+      ./install.sh
+      ```
+    - Customizing the Tools Installation Path: The scripts introduced in this step install compilation tools required by ESP-IDF inside the user home directory: `$HOME/.espressif` on Linux. If you wish to install the tools into a different directory, export the              environment variable IDF_TOOLS_PATH before running the installation scripts. Make sure that your user account has sufficient permissions to read and write this path.
+      ```
+      export IDF_TOOLS_PATH="$HOME/required_idf_tools_path"
+      ./install.sh
+
+      . ./export.sh
+      ```
+      If changing the `IDF_TOOLS_PATH`, make sure it is exported in the environment before running any ESP-IDF tools or scripts. **Note:** Using `IDF_TOOLS_PATH` in variable assignment, e.g., `IDF_TOOLS_PATH="$HOME/required_idf_tools_path" ./install.sh`, without prior exporting, will not work in most shells because the variable assignment will not affect the current execution environment, even if it's exported/changed in the sourced script.
+For more details and error resolving, consult [ESP-IDF Setup for MacOS](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/linux-macos-setup.html#get-started-get-esp-idf).
 ### MacOS
 These are the steps for setting up the ESP-IDF for your ESP32.
 - Install Prerequisites
 - Get ESP-IDF
+- Set up the Tools
 
 1. Install prerequisites:
     - ESP-IDF uses the version of Python installed by default on macOS.
@@ -106,11 +151,72 @@ These are the steps for setting up the ESP-IDF for your ESP32.
       ```
     - ESP-IDF is downloaded into `~/esp/esp-idf`
     - Consult [ESP-IDF Versions](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/versions.html) for information about which ESP-IDF version git.
-  
-For more details and error resolve, consult [ESP-IDF Setup for MacOS](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/linux-macos-setup.html#get-started-get-esp-idf).
+3. Set up the Tools
+    - Aside from the ESP-IDF, you also need to install the tools used by ESP-IDF, such as the compiler, debugger, Python packages, etc, for projects supporting ESP32.
+      ```
+      cd ~/esp/esp-idf
+      ./install.sh esp32
+      ```
+      or with Fish shell
+      ```
+      cd ~/esp/esp-idf
+      ./install.fish esp32
+      ```
+    - The above commands install tools for ESP32 only. If you intend to develop projects for more chip targets then you should list all of them and run for example:
+      ```
+      cd ~/esp/esp-idf
+      ./install.sh esp32,esp32s2
+      ```
+      or with Fish shell
+      ```
+      cd ~/esp/esp-idf
+      ./install.fish esp32,esp32s2
+      ```
+    - In order to install tools for all supported targets please run the following command:
+      ```
+      cd ~/esp/esp-idf
+      ./install.sh all
+      ```
+      or with Fish shell
+      ```
+      cd ~/esp/esp-idf
+      ./install.fish all
+      ```
+      
+For more details and error resolving, consult [ESP-IDF Setup for MacOS](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/linux-macos-setup.html#get-started-get-esp-idf).
 ## Environment Setup
 
+### Windows
+- ESP-IDF Tools Installer already created a shortcut in the Start menu and Desktop for these 2 options to launch the ESP-IDF when installation is done. These shortcuts launch the corresponding environment and runs `export.bat` script to set up the environment            variables (`PATH`, `IDF_PATH` and others). Inside theses, all the installed tools are available.
+- These shortcuts are specific to the ESP-IDF directory selected in the ESP-IDF Tools Installer. If you have multiple ESP-IDF directories on the computer (for example, to work with different versions of ESP-IDF), you have two options to use them:
+  * Create a copy of the shortcut created by the ESP-IDF Tools Installer, and change the working directory of the new shortcut to the ESP-IDF directory you wish to use.
+  * Alternatively, run `cmd.exe` or `powershell.exe`, then change to the ESP-IDF directory you wish to use, and run `export.bat`. Note that unlike the previous option, this way requires `Python` and `Git` to be present in `PATH`. If you get errors related to                `Python` or `Git` not being found, use the first option.
+ 
+### Linux and MacOS
+The installed tools are not yet added to the PATH environment variable. To make the tools usable from the command line, some environment variables must be set. ESP-IDF provides another script which does that.
+- In the terminal where you are going to use ESP-IDF, run:
+  ```
+  . $HOME/esp/esp-idf/export.sh
+  ```
+  or for fish (supported only since fish version 3.0.0):
+  ```
+  . $HOME/esp/esp-idf/export.fish
+  ```
+- If you plan to use esp-idf frequently, you can create an alias for executing `export.sh`:
+  * Copy and paste the following command to your shell's profile (`.profile`, `.bashrc`, `.zprofile`, etc.)
+    ```
+    alias get_idf='. $HOME/esp/esp-idf/export.sh'
+    ```
+  * Refresh the configuration by restarting the terminal session or by running `source [path to profile]`, for example, `source ~/.bashrc`.
+
+Now you can run `get_idf` to set up or refresh the esp-idf environment in any terminal session.
+
+Technically, you can add `export.sh` to your shell's profile directly; however, it is not recommended. Doing so activates IDF virtual environment in every terminal session (including those where IDF is not needed), defeating the purpose of the virtual environment and likely affecting other software.
+
 ## Creating a New Project
+### Windows
+
+### Linux and MacOS
 
 ## Compiling and Flashing
 
