@@ -7,13 +7,13 @@ This document provides a step-by-step guide to set up and use the Espressif IoT 
 2. [Installation](#installation)
     - [Windows](#windows)
     - [Linux](#linux)
-    - [macOS](#macos)
-3. Environment Setup
-4. Creating a New Project
-5. Compiling and Flashing
-6. Common Commands
-7. Project Structure
-8. Useful Tips
+    - [MacOS](#macos)
+3. [Environment Setup](#environment-setup)
+4. [Creating a New Project](#creating-a-new-project)
+5. [Compiling and Flashing](#compilingand-flashing)
+6. [Common Commands](#common-commands)
+7. [Project Structure](#roject-structure)
+8. [Useful Tips](#useful-tips)
 
 ## Requirements
 1. The installer of ESP-IDF deploys the following components:
@@ -44,5 +44,78 @@ This document provides a step-by-step guide to set up and use the Espressif IoT 
 
 7. ESP-IDF Tools Installer also creates a shortcut in the Start menu and Desktop for these 2 options to launch the ESP-IDF. These shortcuts launch the corresponding environment and runs `export.bat` script to set up the environment variables (`PATH`, `IDF_PATH` and others). Inside theses, all the installed tools are available.
 8. These shortcuts are specific to the ESP-IDF directory selected in the ESP-IDF Tools Installer. If you have multiple ESP-IDF directories on the computer (for example, to work with different versions of ESP-IDF), you have two options to use them:
-        - Create a copy of the shortcut created by the ESP-IDF Tools Installer, and change the working directory of the new shortcut to the ESP-IDF directory you wish to use.
-        - Alternatively, run `cmd.exe` or `powershell.exe`, then change to the ESP-IDF directory you wish to use, and run `export.bat`. Note that unlike the previous option, this way requires `Python` and `Git` to be present in `PATH`. If you get errors related to `Python` or `Git` not being found, use the first option.
+   - Create a copy of the shortcut created by the ESP-IDF Tools Installer, and change the working directory of the new shortcut to the ESP-IDF directory you wish to use.
+   - Alternatively, run `cmd.exe` or `powershell.exe`, then change to the ESP-IDF directory you wish to use, and run `export.bat`. Note that unlike the previous option, this way requires `Python` and `Git` to be present in `PATH`. If you get errors related to                `Python` or `Git` not being found, use the first option.
+### Linux
+These are the steps for setting up the ESP-IDF for your ESP32.
+- Install Prerequisites
+- Get ESP-IDF
+
+1. Install prerequisites:
+   - Ubuntu and Debian:
+     ```
+     sudo apt-get install git wget flex bison gperf python3 python3-pip python3-venv cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0
+     ```
+   - CentOS 7 & 8:
+     ```
+     sudo yum -y update && sudo yum install git wget flex bison gperf python3 cmake ninja-build ccache dfu-util libusbx
+     ```
+   - Arch:
+     ```
+     sudo pacman -S --needed gcc git make flex bison gperf python cmake ninja ccache dfu-util libusb python-pip
+     ```
+     
+2. Get ESP-IDF
+    - To build applications for the ESP32, you need the software libraries provided by Espressif in [ESP-IDF repository](https://github.com/espressif/esp-idf).
+    - To get ESP-IDF, navigate to your installation directory and clone the repository with git clone, following instructions below specific to your operating system.
+    - Open Terminal, and run the following commands:
+      ```
+      mkdir -p ~/esp
+      cd ~/esp
+      git clone --recursive https://github.com/espressif/esp-idf.git
+      ```
+    - ESP-IDF is downloaded into `~/esp/esp-idf`
+    - Consult [ESP-IDF Versions](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/versions.html) for information about which ESP-IDF version git.
+### MacOS
+These are the steps for setting up the ESP-IDF for your ESP32.
+- Install Prerequisites
+- Get ESP-IDF
+
+1. Install prerequisites:
+    - ESP-IDF uses the version of Python installed by default on macOS.
+    - Install CMake & Ninja build:
+      * If you have [HomeBrew](https://brew.sh/), you can run:
+        ```
+        brew install cmake ninja dfu-util
+        ```
+      * If you have [MacPorts](https://www.macports.org/install.php), you can run:
+        ```
+        sudo port install cmake ninja dfu-util
+        ```
+      * Otherwise, consult the [CMake](https://cmake.org/) and [Ninja](https://ninja-build.org/) home pages for macOS installation downloads.
+    - It is strongly recommended to also install [ccache](https://ccache.dev/) for faster builds. If you have **HomeBrew**, this can be done via `brew install ccache` or `sudo port install ccache` on **MacPorts**.
+
+2. Get ESP-IDF
+    - To build applications for the ESP32, you need the software libraries provided by Espressif in [ESP-IDF repository](https://github.com/espressif/esp-idf).
+    - To get ESP-IDF, navigate to your installation directory and clone the repository with git clone, following instructions below specific to your operating system.
+    - Open Terminal, and run the following commands:
+      ```
+      mkdir -p ~/esp
+      cd ~/esp
+      git clone --recursive https://github.com/espressif/esp-idf.git
+      ```
+    - ESP-IDF is downloaded into `~/esp/esp-idf`
+    - Consult [ESP-IDF Versions](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/versions.html) for information about which ESP-IDF version git.
+  
+For more details and error resolve, consult [ESP-IDF Setup for MacOS](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/linux-macos-setup.html#get-started-get-esp-idf).
+## Environment Setup
+
+## Creating a New Project
+
+## Compiling and Flashing
+
+## Common Commands
+
+## Project Structure
+
+## Useful Tips
