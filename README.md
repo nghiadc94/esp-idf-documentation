@@ -10,10 +10,11 @@ This document provides a step-by-step guide to set up and use the Espressif IoT 
     - [MacOS](#macos)
 3. [Environment Setup](#environment-setup)
 4. [Creating a New Project](#creating-a-new-project)
-5. [Compiling and Flashing](#compiling-and-flashing)
-6. [Common Commands](#common-commands)
-7. [Project Structure](#project-structure)
-8. [Useful Tips](#useful-tips)
+5. [Configure a Project](#configure-a-project)
+6. [Compiling and Flashing](#compiling-and-flashing)
+7. [Common Commands](#common-commands)
+8. [Project Structure](#project-structure)
+9. [Useful Tips](#useful-tips)
 
 ## Requirements
 1. The installer of ESP-IDF deploys the following components:
@@ -214,14 +215,172 @@ Now you can run `get_idf` to set up or refresh the esp-idf environment in any te
 Technically, you can add `export.sh` to your shell's profile directly; however, it is not recommended. Doing so activates IDF virtual environment in every terminal session (including those where IDF is not needed), defeating the purpose of the virtual environment and likely affecting other software.
 
 ## Creating a New Project
+
 ### Windows
+You can start with [get-started/hello_world](https://github.com/espressif/esp-idf/tree/186f2a89/examples/get-started/hello_world) project from [examples](https://github.com/espressif/esp-idf/tree/186f2a89/examples) directory in ESP-IDF.
+Copy the project [get-started/hello_world](https://github.com/espressif/esp-idf/tree/186f2a89/examples/get-started/hello_world) to `~/esp` directory, or use below commands:
+```
+cd %userprofile%\esp
+xcopy /e /i %IDF_PATH%\examples\get-started\hello_world hello_world
+```
 
 ### Linux and MacOS
+You can start with [get-started/hello_world](https://github.com/espressif/esp-idf/tree/186f2a89/examples/get-started/hello_world) project from [examples](https://github.com/espressif/esp-idf/tree/186f2a89/examples) directory in ESP-IDF.
+Copy the project [get-started/hello_world](https://github.com/espressif/esp-idf/tree/186f2a89/examples/get-started/hello_world) to `~/esp` directory:
+```
+cd ~/esp
+cp -r $IDF_PATH/examples/get-started/hello_world .
+```
+
+## Configure a Project
+ESP-IDF have a `menuconfig` for easy configure the feature of ESP32, automatically set up definition and feature which you can quickly use during the devolopment.
+
+However, it is your choice to follow this or not. You can implement these settings by your own code.
+![image](https://github.com/user-attachments/assets/d440f1f1-87af-46a2-9e1b-9d7266a25220)
+
+After open ESP-IDF followed by previous steps, navigate to `your-project` directory, set ESP32 as the target, and run the project configuration utility `menuconfig`.
+```
+cd ~/esp/your-project
+idf.py set-target esp32
+idf.py menuconfig
+```
+Chip type will affect the `set-target` command. For detail, checkout [Select the Target Chip: set-target](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/tools/idf-py.html#selecting-idf-target).
+For further infomration about `menuconfig`, run `idf.py menuconfig --help`
 
 ## Compiling and Flashing
 
+### Build the Project
+Build the project by running:
+```
+idf.py build
+```
+This command compiles the application and all ESP-IDF components, then it generates the bootloader, partition table, and application binaries.
+```
+$ idf.py build
+Running cmake in directory /path/to/hello_world/build
+Executing "cmake -G Ninja --warn-uninitialized /path/to/hello_world"...
+Warn about uninitialized values.
+-- Found Git: /usr/bin/git (found version "2.17.0")
+-- Building empty aws_iot component due to configuration
+-- Component names: ...
+-- Component paths: ...
+
+... (more lines of build system output)
+
+[527/527] Generating hello_world.bin
+esptool.py v2.3.1
+
+Project build complete. To flash, run this command:
+../../../components/esptool_py/esptool/esptool.py -p (PORT) -b 921600 write_flash --flash_mode dio --flash_size detect --flash_freq 40m 0x10000 build/hello_world.bin  build 0x1000 build/bootloader/bootloader.bin 0x8000 build/partition_table/partition-table.bin
+or run 'idf.py -p PORT flash'
+```
+If there are no errors, the build finishes by generating the firmware binary .bin files.
+
+### Flash onto the Device
+Now connect your ESP32 board to the computer and check under which serial port the board is visible.
+**Windows**: starting with `COM`
+**Linux**: starting with `/dev/tty`
+**MacOS**: starting with `/dev/cu.`
+
+To flash the binaries that you just built for the ESP32 in the previous step, you need to run the following command:
+```
+idf.py -p PORT flash
+```
+Replace `PORT` with your ESP32 board's USB port name. If the `-p PORT` is not defined in command, the `idf.py` will try to connect automatically using the available USB ports.
+
+If you are not sure how to check the serial port name, please refer to [Establish Serial Connection with ESP32](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/establish-serial-connection.html) for full details.
+**Note**: The option flash automatically builds and flashes the project, so if you have plan to run/test immediately, idf.py build is not necessary.
+
+If there is any issues encountered during flashing, see the [Useful Tips](#useful-tips) below. You can also refer to [Flashing Troubleshooting](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/flashing-troubleshooting.html) page or [Establish Serial Connection with ESP32](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/establish-serial-connection.html) for more detailed information.
+
+When flashing, there is output log similar to the following:
+```
+...
+esptool.py --chip esp32 -p /dev/ttyUSB0 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 2MB 0x8000 partition_table/partition-table.bin 0x1000 bootloader/bootloader.bin 0x10000 hello_world.bin
+esptool.py v3.0-dev
+Serial port /dev/ttyUSB0
+Connecting........_
+Chip is ESP32D0WDQ6 (revision 0)
+Features: WiFi, BT, Dual Core, Coding Scheme None
+Crystal is 40MHz
+MAC: 24:0a:c4:05:b9:14
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Compressed 3072 bytes to 103...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (103 compressed) at 0x00008000 in 0.0 seconds (effective 5962.8 kbit/s)...
+Hash of data verified.
+Compressed 26096 bytes to 15408...
+Writing at 0x00001000... (100 %)
+Wrote 26096 bytes (15408 compressed) at 0x00001000 in 0.4 seconds (effective 546.7 kbit/s)...
+Hash of data verified.
+Compressed 147104 bytes to 77364...
+Writing at 0x00010000... (20 %)
+Writing at 0x00014000... (40 %)
+Writing at 0x00018000... (60 %)
+Writing at 0x0001c000... (80 %)
+Writing at 0x00020000... (100 %)
+Wrote 147104 bytes (77364 compressed) at 0x00010000 in 1.9 seconds (effective 615.5 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...
+Done
+```
+If there are no issues by the end of the flash process, the board will reboot and start up the `your-project-name` application.
 ## Common Commands
+- `idf.py build`: Compiles the project
+- `idf.py flash`: Flashes the compiled binary to ESP32
+- `idf.py monitor`: Serial monitor
+- `idf.py clean`: Cleans the build directory
+- `idf.py size`: Displays binary size info
+- `idf.py fullclean`: Cleans all build and configuration data
 
+For ESP-IDF monitor, if IDF monitor fails shortly after the upload, or, if instead of the messages above, you see random garbage similar to what is given below, your board is likely using a 26 MHz crystal. Most development board designs use 40 MHz, so ESP-IDF uses this frequency as a default value.
+![image](https://github.com/user-attachments/assets/a34d1bf8-b66b-4e89-ba06-13bfa533c3ac)
+If you have such a problem, do the following:
+- Exit the monitor
+- Go back to `menuconfig`
+- Go to `Component config` --> `Hardware Settings` --> `Main XTAL Config` --> `Main XTAL frequency`, then change CONFIG_XTAL_FREQ value to your crystal value.
+- After that, `build` and `flash` the application again
+
+For more details on specific `monitor` features, refer to [ESP-IDF Monitor](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/tools/idf-monitor.html)
+You can combine building, flashing and monitoring into one step by running:
+```
+idf.py -p PORT flash monitor --[monitor features]
+```
 ## Project Structure
-
+```
+your_project/
+├── build/                  # Generated binaries and build files
+├── components/             # Custom components (optional)
+├── main/                   # Application source files
+│   └── main.c              # Main source files
+│   └── CMakeLists.txt      # CMake definition for main application
+├── customLibs/             # Library files folder (optional)
+│   └── lib1
+│       └── lib1.c          # Library 1 Source file
+│       └── lib1.h          # Library 1 Header file
+│       └── CMakeLists.txt  # CMake definition for library 1 files
+|   .
+|   .
+|   .
+│   └── libN
+│       └── libN.c          # Library N Source file
+│       └── libN.h          # Library N Header file
+│       └── CMakeLists.txt  # CMake definition for library 1 files
+├── CMakeLists.txt          # Project CMake definition
+└── sdkconfig               # Configuration file (after menuconfig)
+```
+`Libs/` folder is optional can be place anywhere in `your-project`. However, be sure to include this line in Project `CMakeLists.txt`
+```
+include($ENV{IDF_PATH}/tools/cmake/project.cmake)
+set(EXTRA_COMPONENT_DIRS ${CMAKE_CURRENT_LIST_DIR}/{path}/customLibs)
+```
 ## Useful Tips
+**Permission Denied Issue**:
+With some Linux distributions, you may get the error message similar to `Could not open port <PORT>: Permission denied: '<PORT>'` when flashing the ESP32. This can be solved by adding the current user to the specific group, such as `dialout` or `uucp` group.
