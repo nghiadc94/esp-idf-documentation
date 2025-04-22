@@ -277,7 +277,10 @@ or run 'idf.py -p PORT flash'
 If there are no errors, the build finishes by generating the firmware binary .bin files.
 
 ### Flash onto the Device
-Now connect your ESP32 board to the computer and check under which serial port the board is visible.
+**CP210x, FTDI, or CH340 and its driver are required for flashing** when come to custom ESP32 board. Make sure to add those module into the custom board. 
+ESP32 can be flashed through UART0 pins which is connected to GPIO1 (TX) and GPIO3 (RX).
+
+Connect your ESP32 board to the computer and check under which serial port the board is visible.
 **Windows**: starting with `COM`
 **Linux**: starting with `/dev/tty`
 **MacOS**: starting with `/dev/cu.`
@@ -290,6 +293,16 @@ Replace `PORT` with your ESP32 board's USB port name. If the `-p PORT` is not de
 
 If you are not sure how to check the serial port name, please refer to [Establish Serial Connection with ESP32](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/establish-serial-connection.html) for full details.
 **Note**: The option flash automatically builds and flashes the project, so if you have plan to run/test immediately, idf.py build is not necessary.
+
+**Flash Erase**
+Erasing the flash is also possible. To erase the entire flash memory you can run the following command:
+```
+idf.py -p PORT erase-flash
+```
+For erasing the `OTA data` partition while working with OTA feature, you can run this command:
+```
+idf.py -p PORT erase-otadata
+```
 
 If there is any issues encountered during flashing, see the [Useful Tips](#useful-tips) below. You can also refer to [Flashing Troubleshooting](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/flashing-troubleshooting.html) page or [Establish Serial Connection with ESP32](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/establish-serial-connection.html) for more detailed information.
 
@@ -332,14 +345,13 @@ Hard resetting via RTS pin...
 Done
 ```
 If there are no issues by the end of the flash process, the board will reboot and start up the `your-project-name` application.
-## Common Commands
-- `idf.py build`: Compiles the project
-- `idf.py flash`: Flashes the compiled binary to ESP32
-- `idf.py monitor`: Serial monitor
-- `idf.py clean`: Cleans the build directory
-- `idf.py size`: Displays binary size info
-- `idf.py fullclean`: Cleans all build and configuration data
 
+### Monitor the Device
+ESP32 can be monitor during working by using this command:
+```
+idf.py monitor
+```
+The default serial communication using monitor feature is through UART0. other UART can also be config as a monitor channel
 For ESP-IDF monitor, if IDF monitor fails shortly after the upload, or, if instead of the messages above, you see random garbage similar to what is given below, your board is likely using a 26 MHz crystal. Most development board designs use 40 MHz, so ESP-IDF uses this frequency as a default value.
 ![image](https://github.com/user-attachments/assets/a34d1bf8-b66b-4e89-ba06-13bfa533c3ac)
 If you have such a problem, do the following:
@@ -353,6 +365,14 @@ You can combine building, flashing and monitoring into one step by running:
 ```
 idf.py -p PORT flash monitor --[monitor features]
 ```
+
+## Common Commands
+- `idf.py build`: Compiles the project
+- `idf.py flash`: Flashes the compiled binary to ESP32
+- `idf.py monitor`: Serial monitor
+- `idf.py clean`: Cleans the build directory
+- `idf.py size`: Displays binary size info
+- `idf.py fullclean`: Cleans all build and configuration data
 ## Project Structure
 ```
 your_project/
@@ -384,3 +404,30 @@ set(EXTRA_COMPONENT_DIRS ${CMAKE_CURRENT_LIST_DIR}/{path}/customLibs)
 ## Useful Tips
 **Permission Denied Issue**:
 With some Linux distributions, you may get the error message similar to `Could not open port <PORT>: Permission denied: '<PORT>'` when flashing the ESP32. This can be solved by adding the current user to the specific group, such as `dialout` or `uucp` group.
+
+**Unsupported Targets**
+Some of examples do not support ESP32 because required hardware is not included in ESP32 so it cannot be supported.
+Please check the README file in every example. If this is present including ESP32-type target, or the table does not exist at all, the example will work on ESP32.
+
+**Python Compatibility**
+ESP-IDF supports Python 3.9 or newer. It is recommended to upgrade your operating system to a recent version satisfying this requirement.
+
+**Partition Table**
+ESP-IDF support several type of partition table below:
+![image](https://github.com/user-attachments/assets/d20f7825-d09c-49af-8cdd-b8c446b9ea8a)
+Custom partition is allowed, using a .csv file with format below:
+```
+# Name,     Type, SubType, Offset,   Size
+nvs,        data, nvs,     0x9000,   24K
+otadata,    data, ota,     0xf000,   8K
+phy_init,   data, phy,     0x11000,  4K
+factory,    app,  factory, 0x10000,  1M
+ota_0,      app,  ota_0,   ,         1M
+ota_1,      app,  ota_1,   ,         1M
+.
+.
+.
+par-name,   app,  par_n,   ,         1M
+```
+The custome partition can be set by `menuconfig`-->`Partition Table`-->`Partition Table`-->`Custom partition table CSV`. The file path need to be same location with Project `CMakeList.txt`
+The size of number of app partitions depend on the memory flash IC come along with ESP32.
