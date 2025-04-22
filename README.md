@@ -280,9 +280,12 @@ If there are no errors, the build finishes by generating the firmware binary .bi
 **CP210x, FTDI, or CH340 and its driver are required for flashing** when come to custom ESP32 board. Make sure to add those module into the custom board. 
 ESP32 can be flashed through UART0 pins which is connected to GPIO1 (TX) and GPIO3 (RX).
 
-Connect your ESP32 board to the computer and check under which serial port the board is visible.
+Connect your ESP32 board to the computer and check under which serial port the board is visible:
+
 **Windows**: starting with `COM`
+
 **Linux**: starting with `/dev/tty`
+
 **MacOS**: starting with `/dev/cu.`
 
 To flash the binaries that you just built for the ESP32 in the previous step, you need to run the following command:
