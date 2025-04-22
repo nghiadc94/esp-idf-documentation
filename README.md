@@ -5,9 +5,9 @@ This document provides a step-by-step guide to set up and use the Espressif IoT 
 ## Table of Contents
 1. [Requirement](#requirements)
 2. [Installation](#installation)
-  - [Windows](#windows)
-  - [Linux](#linux)
-  - [macOS](#macos)
+    - [Windows](#windows)
+    - [Linux](#linux)
+    - [macOS](#macos)
 3. Environment Setup
 4. Creating a New Project
 5. Compiling and Flashing
