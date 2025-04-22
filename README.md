@@ -12,7 +12,7 @@ This document provides a step-by-step guide to set up and use the Espressif IoT 
 4. [Creating a New Project](#creating-a-new-project)
 5. [Compiling and Flashing](#compilingand-flashing)
 6. [Common Commands](#common-commands)
-7. [Project Structure](#roject-structure)
+7. [Project Structure](#project-structure)
 8. [Useful Tips](#useful-tips)
 
 ## Requirements
