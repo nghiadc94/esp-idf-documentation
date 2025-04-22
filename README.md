@@ -351,7 +351,8 @@ ESP32 can be monitor during working by using this command:
 ```
 idf.py monitor
 ```
-The default serial communication using monitor feature is through UART0. other UART can also be config as a monitor channel
+The default serial communication using monitor feature is through UART0. Other UARTs can also be config as another monitoring channels but it will need to be configured by your own config and print functions.
+`idf.py monitor` cannot listen to UART1 or UART2, because it's bound to the USB-to-serial used during flashing (UART0 by default).
 For ESP-IDF monitor, if IDF monitor fails shortly after the upload, or, if instead of the messages above, you see random garbage similar to what is given below, your board is likely using a 26 MHz crystal. Most development board designs use 40 MHz, so ESP-IDF uses this frequency as a default value.
 ![image](https://github.com/user-attachments/assets/a34d1bf8-b66b-4e89-ba06-13bfa533c3ac)
 If you have such a problem, do the following:
