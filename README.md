@@ -409,14 +409,14 @@ set(EXTRA_COMPONENT_DIRS ${CMAKE_CURRENT_LIST_DIR}/{path}/customLibs)
 **Permission Denied Issue**:
 With some Linux distributions, you may get the error message similar to `Could not open port <PORT>: Permission denied: '<PORT>'` when flashing the ESP32. This can be solved by adding the current user to the specific group, such as `dialout` or `uucp` group.
 
-**Unsupported Targets**
+**Unsupported Targets**:
 Some of examples do not support ESP32 because required hardware is not included in ESP32 so it cannot be supported.
 Please check the README file in every example. If this is present including ESP32-type target, or the table does not exist at all, the example will work on ESP32.
 
-**Python Compatibility**
+**Python Compatibility**:
 ESP-IDF supports Python 3.9 or newer. It is recommended to upgrade your operating system to a recent version satisfying this requirement.
 
-**Partition Table**
+**Partition Table**:
 ESP-IDF support several type of partition table below:
 ![image](https://github.com/user-attachments/assets/d20f7825-d09c-49af-8cdd-b8c446b9ea8a)
 Custom partition is allowed, using a .csv file with format below:
