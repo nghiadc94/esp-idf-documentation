@@ -16,13 +16,13 @@ This document provides a step-by-step guide to set up and use the Espressif IoT 
 8. Useful Tips
 
 ## Requirements
-- The installer of ESP-IDF deploys the following components:
+1. The installer of ESP-IDF deploys the following components:
   * Embedded Python
   * Cross-compilers
   * OpenOCD
   * [CMake](https://cmake.org/download/) and [Ninja](https://ninja-build.org/) build tools
   * ESP-IDF
-- USB-to-Serial drivers for ESP32 (CP210x, FTDI, or CH340) (included with ESP32 Dev Board)
+2. USB-to-Serial drivers for ESP32 (CP210x, FTDI, or CH340) (included with ESP32 Dev Board)
 
 ## Installation
 
