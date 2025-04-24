@@ -14,7 +14,8 @@ This document provides a step-by-step guide to set up and use the Espressif IoT 
 6. [Compiling and Flashing](#compiling-and-flashing)
 7. [Common Commands](#common-commands)
 8. [Project Structure](#project-structure)
-9. [Useful Tips](#useful-tips)
+9. [Feature Examples](#feature-examples)
+10. [Useful Tips](#useful-tips)
 
 ## Requirements
 1. The installer of ESP-IDF deploys the following components:
@@ -378,6 +379,9 @@ idf.py -p PORT flash monitor --[monitor features]
 - `idf.py size`: Displays binary size info
 - `idf.py fullclean`: Cleans all build and configuration data
 ## Project Structure
+
+A project structure for ESP32 projects using ESP-IDF can be describled as below:
+
 ```
 your_project/
 ├── build/                  # Generated binaries and build files
@@ -400,11 +404,19 @@ your_project/
 ├── CMakeLists.txt          # Project CMake definition
 └── sdkconfig               # Configuration file (after menuconfig)
 ```
-`Libs/` folder is optional can be place anywhere in `your-project`. However, be sure to include this line in Project `CMakeLists.txt`
+
+`customLibs/` folder is optional can be place anywhere in `your-project`. However, be sure to include this line in Project `CMakeLists.txt`
 ```
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 set(EXTRA_COMPONENT_DIRS ${CMAKE_CURRENT_LIST_DIR}/{path}/customLibs)
 ```
+
+## Feature Examples
+For feature examples of ESP32, nagvigate to `examples/` folder of ESP-IDF, i.e `~esp/Espressif/frameworks/esp-idf-v5.4/examples/`
+Copying these examples to workspace folder `esp/` before taking any actions is a recommendation practices.
+Every example is a completed project. Therefore, after parameter configuration, example can be built and flashed into ESP32 for testing.
+There is a litmitation on which type of ESP32 can be used for every example, be sure to check the README area for detail supported target.
+
 ## Useful Tips
 **Permission Denied Issue**:
 With some Linux distributions, you may get the error message similar to `Could not open port <PORT>: Permission denied: '<PORT>'` when flashing the ESP32. This can be solved by adding the current user to the specific group, such as `dialout` or `uucp` group.
